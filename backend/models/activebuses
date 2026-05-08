@@ -1,0 +1,105 @@
+const mongoose = require('mongoose');
+
+const trackingSchema = new mongoose.Schema({
+  driverName: {
+    type: String,
+    required: true
+  },
+  driverId: {
+    type: String,
+    required: true
+  },
+  busNumberPlate: {
+    type: String,
+    required: true
+  },
+  busName: {
+    type: String,
+    required: true
+  },
+  middlestations: [{
+    name: {
+      type: String,
+      required: true
+    },
+    lat: {
+      type: Number,
+      required: true
+    },
+    long: {
+      type: Number,
+      required: true
+    },
+    time: {
+      type: String,
+      required: true
+    }
+  }],
+  startingPlace: {
+    type: String,
+    required: true
+  },
+  destination: {
+    type: String,
+    required: true
+  },
+  startingPlaceLocation: {
+    lat: {
+      type: Number,
+      required: true
+    },
+    long: {
+      type: Number,
+      required: true
+    }
+  },
+  destinationLocation: {
+    lat: {
+      type: Number,
+      required: true
+    },
+    long: {
+      type: Number,
+      required: true
+    }
+  },
+  currLat: {
+    type: Number,
+    required: false
+  },
+  currLong: {
+    type: Number,
+    required: false
+  },
+  address:{
+    type: String,
+    required:true
+  },
+  endtime: {
+    type: String,
+    required: true
+  },
+  isactive: {
+    type: Boolean,
+    required: true
+  }
+});
+
+// Post middleware to immediately delete inactive buses
+trackingSchema.post('save', async function(doc) {
+	if (doc.isactive === false) {
+		console.log(`Bus ${doc.busNumberPlate} marked as inactive. Deleting immediately.`);
+		
+		try {
+			// Immediately delete the document when isactive is false
+			await this.constructor.findByIdAndDelete(doc._id);
+			console.log(`Bus ${doc.busNumberPlate} automatically deleted immediately after becoming inactive.`);
+		} catch (error) {
+			console.error('Error auto-deleting inactive bus:', error);
+		}
+	}
+});
+
+const Tracking = mongoose.model('Tracking', trackingSchema);
+
+module.exports = Tracking;
