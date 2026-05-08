@@ -66,7 +66,7 @@ const BusTrackingMap: React.FC<BusTrackingMapProps> = ({
     isTracking
   });
   const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyAzttkphjYlfyEbUoe-5NtAVexKsOI7924',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
     libraries: ['geometry', 'drawing']
   });
 
